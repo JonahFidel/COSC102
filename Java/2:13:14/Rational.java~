@@ -1,0 +1,7 @@
+public class Rational 
+{
+  
+  // Data 
+  private int n; // numerator
+  private int d; // denominator 
+  

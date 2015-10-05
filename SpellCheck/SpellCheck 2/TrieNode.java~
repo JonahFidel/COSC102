@@ -1,0 +1,32 @@
+import java.util.*;
+
+public class TrieNode {
+  boolean exists; 
+  HashMap<Character, TrieNode> links = new HashMap<Character, TrieNode>(); 
+  
+  public TrieNode() 
+  {
+    boolean fullWord; 
+    
+  }
+  
+  TrieNode root = new TrieNode(); 
+  public boolean add(String word)
+  {
+    // implement 
+    TrieNode currNode = root; 
+    if (lookup(word) == true) return false; 
+    else {
+      for (int i = 0; i < word.length(); i++) 
+      {
+        if (currNode.links.get(word.charAt(i)) == null)
+        {
+          links.put(word.charAt(i), currNode); 
+        }
+        currNode = links.get(word.charAt(i)); 
+      }
+    return true;
+    }
+  }
+  
+}

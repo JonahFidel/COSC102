@@ -1,0 +1,11 @@
+// Jonah Fidel 
+// Comp Sci 102 
+// SpellCheck Lab 
+// TrieNode Class 
+
+import java.util.*; 
+
+public class TrieNode 
+{
+  null;
+}

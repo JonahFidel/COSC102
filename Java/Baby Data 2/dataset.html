@@ -1,0 +1,217 @@
+<html>
+
+<head>
+<title>COSC 102: Baby Database Program</title>
+</head>
+
+<body>
+
+<h1>COSC 102</h1>
+
+<h2>Program: Baby Database</h2>
+
+<h3>DataSet interface</h3>
+
+<h4>Overview</h4>
+
+<p>The driver program relies on a library for all the data processing;  it is your job to implement this library.
+The interface for the library is declared in <tt>DataSet.java</tt>, and the interface should not be changed.
+You should write a class that implements this interface, providing methods for the code described below.</p>
+
+<p>The original version of the driver program uses the reference (solution) version of the library, which consists of the classes
+<tt>RefDataSet.class</tt> and <tt>RefDataSet$RDSComparator.class</tt>, the former being the implementation of <tt>DataSet</tt>,
+and the latter being a helper class used for sorting.</p>
+
+<p>In order to test your version of the library with the driver program, change the constructor in line 21 of <tt>DataExplorer.java</tt>
+to create a new instance of your class instead of an instance of <tt>RefDataSet</tt>.</p>
+
+<h4>Error Condition</h4>
+
+<p>You don't have to catch any I/O errors.  If any other error occurs, then it is the library's job to generate a <tt>DataSetException</tt>.
+This is a checked exception and the class definition for it is included in the source-code file <tt>DataSetException.java</tt>.
+You should not have to modify this file.
+If you want to include an error message explaining the problem, you can generate the error like so:
+<blockquote>
+<tt>throw new DataSetException("field does not exist");</tt>
+</blockquote>
+Because this is a checked exception, it is explicitly declared in method signatures that might cause you to throw it.
+You don't have to throw this exception, but the declaration is there in case you want to.
+</p>
+
+<h4>Interface Methods</h4>
+
+<tt>
+    public void load(String filename) throws FileNotFoundException, DataSetException;
+</tt>
+<blockquote>
+This method reads the semicolon-separated-data (ssd) file given by <tt>filename</tt> into the <tt>DataSet</tt> data structure.
+The first line of the file is assumed to contain the list of fields, and each subsequent line is a separate data record.
+Do not assume that each line contains the same, or the full, number of fields; but, you can ignore any fields that do not appear in the first line.
+Each field is separated by a semicolon (";").
+<br><br>
+Your code does not have to catch the <tt>FileNotFoundException</tt>; omit a <tt>try...catch</tt> block for that, and it should get passed on to the driver program that will print out an appropriate error message.
+If a non-I/O error occurs (for example, there is no data), you should throw a <tt>DataSetException</tt> including an appropriate error message.
+</blockquote>
+
+<tt>
+    public DataSet copy();
+</tt>
+<blockquote>
+This method helps implement the <tt>copy</tt> command in the driver program.  It returns a new <tt>DataSet</tt> object containing a copy of the data in this dataset.
+Note that this method should produce an object with the same number of data records and the same active fields, and changes to the copied object (e.g., records included, or selection of active fields for printing) should not affect this data object.
+Having said that, you should write your code in such a way that does not use more memory than necessary to accomplish this.
+</blockquote>
+    
+
+<tt>
+    public int getNumFields();
+</tt>
+<blockquote>
+This method returns the number of active fields.  Fields can be marked active -- meaning they will be included in the dataset printout -- or inactive -- meaning the opposite.
+It is an upper bound to any integer argument for a field number in methods below.
+It is intended to be used as part of the print report.
+</blockquote>
+
+
+<tt>    
+    public int getFieldLength(int f);
+</tt>
+<blockquote>
+This method returns the maximum length of the data in any record in the dataset for field <tt>f</tt>, where <tt>f</tt> is an integer between 0 and <tt>getNumFields()</tt>
+(exclusive of the latter).  Thus this method cannot be called on an inactive field.
+It is intended to be used as part of the print report.
+</blockquote>
+
+    
+<tt>
+    public String getFieldTitle(int f);
+</tt>
+<blockquote>
+This method returns the name of an active field represented by the number <tt>f</tt> that must lie between 0 and <tt>getNumFields()</tt> (exclusive of the latter).
+Thus this method cannot be called on an inactive field.
+It is intended to be used as part of the print report.
+</blockquote>
+
+<tt>
+    public int getNumRecords();
+</tt>
+<blockquote>
+This method returns the number of records that are a part of this dataset.  Any record number from 0 up to <tt>getNumRecords()</tt> should return valid data
+when used in the <tt>getRecordField()</tt> method below.
+</blockquote>
+
+    
+<tt>
+    public String getRecordField(int r, int f);
+</tt>
+<blockquote>
+This method returns the data for field <tt>f</tt> in record <tt>r</tt>, where both are given by number.
+The field must be the number of an active field, and the record must be less than <tt>getNumRecords()</tt>.
+This method is intended to be used in a simple loop that prints the output table for a dataset,
+and must only be called on unfiltered records and active fields.
+</blockquote>
+
+    
+<tt>
+    public void intersect(DataSet other); 
+</tt>
+<blockquote>
+This method makes the current dataset the result of intersecting it with the given <tt>other</tt> dataset.
+Only records that appear in both datasets should remain after this operation;
+this operation may affect the return value of <tt>getNumRecords()</tt> but does not change the fields
+or the number of active fields.
+For the purpose of this operation, two records are the same if their first field (regardless of whether that field is active or not) is the same.
+(In the sample files, the first column is the data index.)
+You should assume that both datasets originated from the same datafile.
+</blockquote>
+
+
+<tt>
+    public void union(DataSet other);
+</tt>
+<blockquote>
+This method makes the current dataset the result of performing a union with the given <tt>other</tt> dataset.
+Any record that appears in at least one of the datasets should be included after this operation;
+this operation may affect the return value of <tt>getNumRecords()</tt> but does not change the fields
+or the number of active fields.
+Duplicate records are not created however; if a record is in both, only one copy of that record should be included.
+For the purpose of this operation, two records are the same if their first field (regardless of whether that field is active or not) is the same.
+(In the sample files, the first column is the data index.)
+You should assume that both datasets originated from the same datafile.
+</blockquote>
+
+    
+<tt>
+    public void contains(String field, String search) throws DataSetException;
+</tt>
+<blockquote>
+This method retains only those records that have data containing the string <tt>search</tt> in the given <tt>field</tt>.
+For this method, the field is given by name, and it does not matter if the field is active / included for printing or not.
+If the field does not exist in the dataset header, then throw a <tt>DataSetException</tt>;
+if a record doesn't have the field, then filter it out.
+</blockquote>
+
+    
+<tt>
+    public void starts(String field, String search) throws DataSetException;
+</tt>
+<blockquote>
+This method retains only those records that have data starting with with the string <tt>search</tt> in the given <tt>field</tt>.
+For this method, the field is given by name, and it does not matter if the field is active / included for printing or not.
+If the field does not exist in the dataset header, then throw a <tt>DataSetException</tt>;
+if a record doesn't have the field, then filter it out.
+</blockquote>
+
+    
+<tt>
+    public void includeAll();
+</tt>
+<blockquote>
+Sets all fields to be active, so that <tt>getNumFields()</tt> is the same as the number of fields, or columns, in the original dataset.
+</blockquote>
+
+    
+<tt>
+    public void includeNone();
+</tt>
+<blockquote>
+Sets no fields to be active, so that <tt>getNumFields()</tt> would return 0.
+The data for inactive fields is not lost, in that any methods that operate by field name should still work.
+</blockquote>
+
+    
+<tt>
+    public void include(String field) throws DataSetException;
+</tt>
+<blockquote>
+Sets the field specified by the name <tt>field</tt> to be active, i.e., included in the table printout.
+This method does not change the status of any other field, nor does it toggle the status of the given field.
+It simply sets the field given to be active, thus increasing the number returned by <tt>getNumFields()</tt>.
+The ordering of fields by number as a result of this operation does not matter.
+If the given field does not exist in the dataset, throw a <tt>DataSetException</tt>.
+</blockquote>
+
+    
+<tt>
+    public void asort(String field) throws DataSetException;
+</tt>
+<blockquote>
+Sorts the data records in this dataset in ascending order, depending on lexical String ordering of the data in the given field.
+Place records without data for the given field at the <i>end</i> of the ordering.
+If the field name does not exist in the dataset, then throw a <tt>DataSetException</tt>.
+</blockquote>
+
+
+<tt>    
+    public void dsort(String field) throws DataSetException;
+</tt>
+<blockquote>
+Sorts the data records in this dataset in descending order, depending on lexical String ordering of the data in the given field.
+Place records without data for the given field at the <i>end</i> of the ordering.
+If the field name does not exist in the dataset, then throw a <tt>DataSetException</tt>.
+</blockquote>
+
+
+</body>
+
+</html>

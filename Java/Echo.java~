@@ -1,0 +1,33 @@
+public class Echo
+{
+  public static void main(String[] args)
+  {
+    char Mode = 'n'; 
+    for (int i = 0; i < args.length; i++)
+    {
+      if (args[i] == "-n")
+        Mode = 'n';
+      if (args[i] == "-c") 
+        Mode = 'c';
+      if (args[i] == "-u")
+        Mode = 'u';
+      if (args[i] == "-l") 
+        Mode = 'l'; 
+      if (args[i] == "-t")
+        Mode = 't';
+   
+      if (Mode == 'c') 
+        System.out.println(args[i].length());
+      if (Mode == 'l') 
+        System.out.println(args[i].toLowerCase()); 
+      if (Mode == 'u') 
+        System.out.println(args[i].toUpperCase());
+      if (Mode == 'n') 
+        System.out.println(args[i]);
+      if (Mode == 't') 
+        System.out.println(args[i]);
+    }
+   
+    
+  }
+}

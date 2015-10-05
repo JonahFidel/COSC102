@@ -1,0 +1,133 @@
+<html>
+
+<head>
+<title>COSC 102: Baby Database Program</title>
+</head>
+
+<body>
+
+<h1>COSC 102</h1>
+
+<h2>Program: Baby Database</h2>
+
+<h3>Introduction</h3>
+
+<p>This program asks you to implement a simple database library.
+The library supports a data structure that is meant to be used by other programs.
+For example, this assignment comes with a program called <tt>DataExplorer</tt> that can be used to make queries on a database read from a file; the program is coded to use the database library that you will implement.
+</p>
+
+<h4>Overview</h4>
+
+<p><tt>DataExplorer.java</tt> contains the source code for a simple data-manipulation language.
+It relies on a library that implements the <tt>DataSet</tt> interface for its functionality.
+As posted, it will run correctly using the reference implementation provided in <tt>RefDataSet.class</tt>
+(and the helper file <tt>RefDataSet$RDSComparator.class</tt>).
+Your job is to code your own implementation of the interface to provide the same functionality as the reference implementation,
+making the driver program work.
+</p>
+
+<p>In essence, you are creating a data structure for a text data table.  This data is described by a set of fields, or columns in a table.
+Each row represents one item of data, or a record.  It is not necessary that all records contain data for all fields.
+For example, the fields of an address book might be Name, Address, and Phone;
+each record would represent an individual's listing the address book, and may or may not contain an address and phone.
+We'll assume the first field uniquely identifies each record in the data;
+<i>e.g.</i>, there are no duplicate names.
+</p>
+
+<p>Data is stored on disk in a semicolon-separated-data (ssd) file.
+The first line of the file is a list of the field names, separated by semicolons (";").
+Each subsequent line is a data record, with field data for that record separated by semicolons.
+An empty string between semicolons means that there is no data for the corresponding field;
+there may also be fewer fields and/or semicolons than fields in the header line,
+also indicating absence of data.
+</p>
+
+<p>The query language allows users to identify and print subsets of the data, for example,
+a user may just want to print names and phone numbers of records containing "Ms." in the name field.
+The library provides support for manipulating sets of data through methods.</p>
+
+<p>There are two additional HTML documentation files for this assignment.  You should read these once you have looked at this Introduction page:
+<ul>
+<li><a href="dataset.html">information about the methods the library must provide</a></li>
+<li><a href="driver.html">information about how to use the DataExplorer driver program</a></li>
+</ul></p>
+
+
+<h4>Structure of Files</h4>
+
+<p><tt>DataExplorer.java</tt> contains the source code for the driver program.
+Line 21 of that file creates a new <tt>RefDataSet</tt> object in which to store the data read from a file.
+To use your implementation instead, simply change the constructor call in that line of the source code and recompile.</p>
+
+<p>The methods used in <tt>DataExplorer</tt> are all delcared in the interface <tt>DataSet</tt>, also provided as source code.
+Any implementation must provide code for all the methods declared there (even if they do nothing).
+The reference implementation, <tt>RefDataSet</tt>, implements all of these methods <a href="dataset.html">as described in the documentation</a>.</p>
+
+<p>Along with the <tt>DataSet</tt> interface is the source code for a <tt>DataSetException</tt> class.
+This checked exception is used to signal problems encountered during runtime of the library.
+The <tt>DataExplorer</tt> program will print error messages appropriately when these exceptions occur.</p>
+
+<p>Several sample data files are provided with the extension <tt>.ssd</tt>.  These are plain-text files that you can open in a text editor,
+and you can also create your own files for testing.</p>
+
+
+<h3>Instructions</h3>
+
+<p>Your job is to provide an implementation of the <tt>DataSet</tt> data structure.  Therefore you must write your own class
+that implements that interface and submit code for it and any helper classes.  You must not modify any of the files provided,
+except for changing line 20 of <tt>DataExplorer.java</tt> so that you can test your own implementation.
+You do not need to submit the changed <tt>DataExplorer.java</tt> file.</p>
+
+<p>Your implementation should subscribe to the behavior <a href="dataset.html">described in the documentation</a>.
+It is your job to implement the class as you wish, deciding on what types of instance variables to use to store the data.
+Of course, you are free to add any helper functions to manipulate that data.</p>
+
+<h4>Suggested Plan of Attack</h4>
+
+<ol>
+
+<li>First, read all the documentation carefully.  After this page, read <a href="driver.html">the instructions for the driver program</a> 
+and then read <a href="dataset.html">the description of the <tt>DataSet</tt> interface</a>.</li>
+
+<li>Download all the starter files and compile the Java source.  You should be able to run the driver program and test
+some of its functionality using the given reference implementation and the instructions for the driver program.</li>
+
+<li>Once you get a feel for how datasets can be manipulated, then sketch out how you will store the data in your implementation.
+Think about the various methods / operations and figure out how those work with your implementation.
+<em>The more time you spend planning out your implementation to support all the methods, the less time you'll spend coding and debugging.</em>
+</li>
+
+<li>Approach the method implementations step-by-step.  For example, it's important first to get <tt>load()</tt> working so that
+you have some data.  Use debugging <tt>print</tt> statements to make sure the data looks like it should.
+After <tt>load()</tt> works, implement the various <tt>get...()</tt> methods so that you can at least print an entire
+dataset without doing any manipulation.  Then start working on the operations, probably starting with the <tt>include()</tt>
+methods.</li>
+
+<li>Save the sorting for last, but be aware that certain designs are more compatible with easy implementations of sort than others.</li>
+
+</ol>
+
+<h4>Helpful Pointers</h4>
+
+<p>The Java API has some great information:<ul>
+
+<li>You probably want to use a <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Scanner.html">Scanner</a> to read the file input line-by-line.  When you do, you probably want to use the <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String)">String.split()</a> method to convert the line into an array of Strings, specifying that you want to split on semicolons.</li>
+
+<li>For doing the various searching and filtering, try methods in the <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html">String</a> API.
+The driver program translates all text to lowercase, and your searches and comparisons should be case-insensitive,
+but you'll probably want to keep the actual data intact without any changes to case so that the printed output matches the data in the file.</li>
+
+<li>You're allowed to use collections from the Java library for this assignment, including <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html">ArrayList</a>s.  The point is that your implementation is separate from the interface.</li>
+
+<li>You can use <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Arrays.html">Arrays.sort()</a> or <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Collections.html#sort(java.util.List, java.util.Comparator)">Collections.sort()</a> to help you sort.
+You can do a Google search for examples on this; for example, I found <a href="http://www.vogella.de/blog/2009/08/04/collections-sort-java/">this blog post</a> with an example of sorting an ArrayList.
+</li>
+
+</ul></p>
+
+</ol>
+
+</body>
+
+</html>

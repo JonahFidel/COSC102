@@ -1,0 +1,169 @@
+<html>
+
+<head>
+<title>COSC 102: Baby Database Program</title>
+</head>
+
+<body>
+
+<h1>COSC 102</h1>
+
+<h2>Program: Baby Database</h2>
+
+<h3>Driver Program Instructions</h3>
+
+<p>The <tt>DataExplorer</tt> driver program provides a console interface to the <tt>DataSet</tt> backend.  This page outlines the syntax for input to this driver program.</p>
+
+<h4>Running the program</h4>
+
+<p>To execute the driver program, you must provide the name of the file to read as a command-line argument.
+It is expected that the file is in the semicolon-separated-data (ssd) format.</p>
+
+<p>Running<blockquote><tt>java DataExplorer comets.ssd</tt></blockquote>will launch the driver program and load data from the <tt>comets.ssd</tt> file.
+The program then waits for input from the console.
+Note that if you have a textfile containing a script, you can run that script using command-line redirection; for example:
+<blockquote>
+<tt>java DataExplorer comets.ssd &lt; script.de &gt; output.txt</tt>
+</blockquote>
+would run the commands in the file <tt>script.de</tt> and save the data printed to <tt>output.txt</tt>.  (Note that redirection is a function of the shell and not the driver program itself; this will work in a terminal but not necessarily in an IDE such as Dr. Java, but this invocation of the program is just for convenience.)
+By default, it will take input from <tt>stdin</tt> and print to <tt>stdout</tt> with error messages directed at <tt>stderr</tt>.
+</p>
+
+<h4>High-level description</h4>
+
+<p>The program supports 5 "variables" for datasets, numbered 0 through 4.  There are a set of commands that you can use in "main mode," which do not pertain to the definition of a particular variable.
+If you use the <tt>begin</tt> command to start specifying the contents of one of the datasets, the program will enter "data mode" until you use the <tt>end</tt> command.
+Commands entered in "data mode" pertain to the active dataset variable.
+Each command is valid in its respective mode only.
+</p>
+
+<p>Lines are counted and line numbers are used in error messages.  This is especially useful when running a script from the command line.
+Blank lines are counted but are ignored.
+The command name is the first word in a line; any parameters follow with parameters divided by whitespace.
+Note that if you want to use a space in a parameter, use an underscore instead.
+(Underscores in data files are not supported.)
+</p>
+
+<p>Here is a sample set of commands that would work on the comets dataset:
+<blockquote><pre>
+begin 0
+starts name p/s
+end
+
+begin 1
+starts name p/t
+end
+
+begin 2
+copy 0
+union 1
+starts perihelion_time 94
+asort perihelion_time
+include name perihelion_time
+end
+
+print 2
+exit
+</pre></blockquote>
+The first three sections of commands define datasets to be stored in variables 0, 1, and 2.  The first block starts with a <tt>begin</tt> statement that has a parameter 0, meaning that all commands until <tt>end</tt> pertain to the definition of this dataset.
+When <tt>begin</tt> is executed, a copy of the entire original dataset loaded from the file is placed in the variable;
+subsequent commands can manipulate that dataset.
+For example, the block for variable 0 selects records where the comet name begins with "p/s" and the block for variable 1 does the same for names beginning with "p/t".
+All input gets converted to lowercase when fed to the backend, and all searches are case-insensitive.</p>
+
+<p>The third block starts by making a copy of dataset 0 into variable 2.  It then adds any records from dataset 1 using the <tt>union</tt> command.
+In this way, dataset 2 contains all records where the comet name starts with "p/s" or "p/t".
+It then selects records where the "Perihelion Time" field begins with 94 (remember that underscores are replaced with spaces),
+sorts the dataset by that field, and then restricts the data to be printed to just the "Name" and "Perihelion Time" fields.</p>
+
+<p>The last section outputs the dataset defined in variable 2, namely, the Names and Perihelion Times of comets whose names begin with "p/s" or "p/t" and whose perihelion_times begin with "94".
+</p>
+
+<h4>Commands in main mode</h4>
+
+<tt>begin [var]</tt>
+<blockquote>
+Enters data mode for specifying the dataset in position [var].  [var] must be an integer in the range 0 through 4.
+This command automatically resets the dataset in position [var] to be the full dataset loaded from the file.
+In addition, it automatically sets all fields to be included in the dataset printout.
+</blockquote>
+
+<tt>clear [var]</tt>
+<blockquote>
+This clears the dataset in variable position [var].  Because <tt>begin</tt> automatically resets the dataset, this command will rarely need to be used.
+</blockquote>
+
+<tt>exit</tt>
+<blockquote>
+This ends the program.  The driver will also end on EOF (CTRL+D or CTRL+Z depending on your system).
+</blockquote>
+
+<tt>print [var]</tt>
+<blockquote>
+Prints a table of the dataset defined in position [var].  If any <tt>include</tt> commands were used, the columns printed will be restricted to the fields specified.
+</blockquote>
+
+
+<h4>Commands in data mode</h4>
+
+<tt>asort [field]</tt>
+<blockquote>
+Sorts the dataset in ascending lexical order by the field name [field].
+</blockquote>
+
+<tt>contains [field] [string]</tt>
+<blockquote>
+Keeps only the data records in which the data for field name [field] contains the string [string].
+The search is case-insensitive, and [field] must be a valid field in the dataset.
+</blockquote>
+
+<tt>copy [var]</tt>
+<blockquote>
+Copies to the active variable position the dataset defined in position [var].
+This also copies the included printing fields to the active dataset.
+Changes to the active dataset following this command <i>should not</i> affect the other dataset in position [var].
+</blockquote>
+
+<tt>dsort [field]</tt>
+<blockquote>
+Sorts the dataset in descending lexical order by the field name [field].
+</blockquote>
+
+<tt>end</tt>
+<blockquote>
+Ends the definition of the active dataset variable and returns to main mode.
+</blockquote>
+
+<tt>include</tt><br>
+<tt>include [field] ...</tt>
+<blockquote>
+This command specifies which fields will be included in the output table when the dataset is printed.
+If no parameters are specified, all fields will be included.
+If any parameters are specified, then only those fields will be included.
+The commands are not cumulative, in that <tt>include name</tt> followed by <tt>include perihelion_time</tt> does not cause both those fields to be included;
+each <tt>include</tt> command should be thought of as specifying a full set of fields.
+Any number of fields may be specified, and specifying a field more than once should have no effect.
+Also, the order does not matter; the output table may or may not be in the order specified in the <tt>include</tt> statement.
+</blockquote>
+
+<tt>intersect [var]</tt>
+<blockquote>
+Keeps only the data records that also appear in the dataset defined in variable position [var].
+Records are considered equivalent if the contents of the first field is equal in a case-insensitive String comparison.
+</blockquote>
+
+<tt>starts [field] [string]</tt>
+<blockquote>
+Same as <tt>contains</tt>, except the data must start with [string] rather than simply contain [string].
+</blockquote>
+
+<tt>union [var]</tt>
+<blockquote>
+Joins any records present in the dataset in variable position [var] to the active dataset.
+There should be no duplicate records as a result of the <tt>union</tt>, that is, if a record is present in both,
+it is not duplicated in the current dataset.
+</blockquote>
+
+</body>
+
+</html>

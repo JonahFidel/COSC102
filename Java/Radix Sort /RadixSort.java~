@@ -1,0 +1,42 @@
+// Jonah Fidel 
+// 4/13/14
+// Comp Sci 102 
+// Radix Sort Lab 
+
+import java.util.Scanner; 
+import java.io.*;
+
+public class RadixSort 
+{
+  public static void main(String[] args)
+  {
+    String input_filename = args[0]; 
+    String output_filename = args[1];
+    
+    File output = new File(output_filename); 
+    
+    try
+    {
+     PrintStream ps = new PrintStream(output); 
+     
+     myQueue empty = new myQueue(); 
+     myQueue a = new myQueue(); 
+     myQueue b = new myQueue(); 
+     myQueue c = new myQueue(); 
+     myQueue d = new myQueue();
+     myQueue e = new myQueue(); 
+     myQueue f = new myQueue(); 
+     myQueue g = new myQueue();
+     myQueue h = new myQueue(); 
+     myQueue i = new myQueue(); 
+     myQueue j = new myQueue(); 
+     
+     
+     ps.close(); 
+    }
+    catch(FileNotFoundException E)
+    {
+      System.err.println(E); 
+    } 
+  }
+}

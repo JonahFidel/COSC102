@@ -1,0 +1,38 @@
+import java.util.*;
+
+public class TrieNode
+{
+  boolean exists; 
+  HashMap<Character, TrieNode> links = new HashMap <Character, TrieNode>();
+  private class Trie {
+    private TrieNode root = new TrieNode(); 
+   
+//    public boolean add(String word) {
+////      int offset = 97;
+////      char[] letters = word.toCharArray(); 
+//      
+//      if (lookup(word) == true) return false;
+//      else {
+//        for (int i = 0; i <= word.length(); i++)
+//        {
+//          
+//          links.put(word.charAt(i), root);
+//        }
+//        return true;
+//      }
+//      
+//      
+//    }
+//    
+    public boolean lookup(String word) {
+      TrieNode n = root; 
+      for (int i = 0; i < word.length(); i++)
+      {
+        n = n.links.get(word.charAt(i));
+        if (n == null) return false; 
+      }
+      return n.exists; 
+    }
+  }
+}
+
